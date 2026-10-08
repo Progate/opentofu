@@ -19,7 +19,6 @@ import (
 	"sync/atomic"
 	"unicode"
 
-	"github.com/bgentry/speakeasy"
 	"github.com/mattn/go-isatty"
 	"github.com/mitchellh/colorstring"
 	"github.com/opentofu/opentofu/internal/tofu"
@@ -128,7 +127,7 @@ func (i *UIInput) Input(ctx context.Context, opts *tofu.InputOpts) (string, erro
 		var line string
 		var err error
 		if opts.Secret && isatty.IsTerminal(os.Stdin.Fd()) {
-			line, err = speakeasy.Ask("")
+			line, err = askSecret()
 		} else {
 			buf := bufio.NewReader(r)
 			line, err = buf.ReadString('\n')
