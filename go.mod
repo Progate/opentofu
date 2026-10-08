@@ -291,3 +291,5 @@ tool (
 	google.golang.org/protobuf/cmd/protoc-gen-go
 	honnef.co/go/tools/cmd/staticcheck
 )
+
+replace github.com/bgentry/speakeasy => ./third_party/speakeasy
