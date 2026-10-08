@@ -19,6 +19,7 @@ import (
 	plugin "github.com/hashicorp/go-plugin"
 
 	"github.com/opentofu/opentofu/internal/addrs"
+	awsProvider "github.com/opentofu/opentofu/internal/builtin/providers/aws"
 	terraformProvider "github.com/opentofu/opentofu/internal/builtin/providers/tf"
 	"github.com/opentofu/opentofu/internal/getproviders"
 	"github.com/opentofu/opentofu/internal/logging"
@@ -332,6 +333,12 @@ func (m *Meta) providerFactories() (map[addrs.Provider]providers.Factory, error)
 	}
 	for provider, reattach := range unmanagedProviders {
 		factories[provider] = unmanagedProviderFactory(provider, reattach)
+	}
+
+	// 同梱の aws provider。ブラウザーには provider を取ってくる先が無いので、
+	// 既定のアドレス（registry.opentofu.org/hashicorp/aws）にこれを載せる
+	factories[addrs.NewDefaultProvider("aws")] = func() (providers.Interface, error) {
+		return awsProvider.NewProvider(), nil
 	}
 
 	var err error

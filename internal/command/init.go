@@ -573,6 +573,15 @@ func (c *InitCommand) getProviders(ctx context.Context, config *configs.Config, 
 		reqs = reqs.Merge(stateReqs)
 	}
 
+	// 同梱の provider（→ internal/builtin/providers/aws）は取ってこない。
+	// 要求に残すと「レジストリに無い」で init が止まる
+	for _, bundled := range []addrs.Provider{addrs.NewDefaultProvider("aws")} {
+		if _, requested := reqs[bundled]; requested {
+			delete(reqs, bundled)
+			log.Printf("[INFO] using the bundled provider for %s", bundled.ForDisplay())
+		}
+	}
+
 	potentialProviderConflicts := make(map[string][]string)
 
 	for providerAddr := range reqs {
